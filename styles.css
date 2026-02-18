@@ -1,0 +1,165 @@
+html{
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; 
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(231, 208, 178);
+}
+
+body{
+  background-color: rgb(231, 208, 178);
+}
+
+.Nav-Bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 50px;
+    width: auto;
+    background-color: black;
+}
+
+.Nav-Bar .Home-Button a{
+  margin-left: 150px;
+  display: flex;
+  color: white;
+  text-decoration: none;
+  
+
+  position: relative;
+  top: 0px;
+  transition: top ease 0.5s;
+}
+
+.Nav-Bar .Home-Button h3:hover{
+  top: -1.5px;
+  color: rgb(64, 147, 224);
+}
+
+.Title{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 120px;
+}
+
+.Title .Title-Text h1{
+  display: flex;
+}
+
+.Title .Title-Image{
+  display: flex;
+  height: 65px;
+  width: 65px;
+}
+
+.Input-Boxes{
+  display: flex;
+  margin: 10px;
+  align-items: center;
+  flex-direction: column;
+  width: 750px;
+}
+
+.Input-Boxes .Input-Boxes-Title{
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  margin-left: 45px;
+}
+
+.Input-Boxes .Input-Boxes-Title img{
+  display: flex;
+  height: 60px;
+  width: auto;
+}
+
+.Input-Boxes .Input-Boxes-Title h3{
+  display: flex;
+
+}
+
+.Input-Boxes .Input-Box{
+  display: flex;
+  margin: 5px;
+  outline: none;
+}
+
+.Input-Boxes .Input-Box input{
+  display: flex;
+  gap: 5px;
+  height: 35px;
+  width: 650px;
+  padding-left: 10px;
+  border-radius: 5px;
+}
+
+.Input-Boxes .Recommendation-Button {
+  margin: 30px;
+  display: flex;
+  height: 40px;
+  width: auto;
+  
+  position: relative;
+  top: 0px;
+  transition: top ease 0.3s;
+}
+
+.Recommendation-Button:hover
+{
+  top: -10.5px;
+}
+.Input-Boxes .Recommendation-Button a{
+  display: flex;
+  justify-content: center;  
+  align-items: center;
+  border-radius: 10px;
+  background-color: black;
+  color: white;
+  height: 40px;
+  width: 160px;
+  text-decoration: none;
+
+
+}
+
+/* 2. The Dropdown Menu */
+.suggestions-list {
+    position: absolute;      /* Floats the list so it doesn't push buttons down */
+    top: 100%;               /* Places it exactly at the bottom of the input */
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: none;
+    list-style: none;        /* Removes the bullets */
+    padding: 0;
+    margin: 0;
+    z-index: 1000;           /* Ensures it stays on top of other elements */
+    max-height: 200px;
+    overflow-y: auto;        /* Adds a scrollbar if the list is long */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 3. The Individual Artist Items */
+.suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+    font-family: sans-serif;
+}
+
+/* 4. The Hover Effect */
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
