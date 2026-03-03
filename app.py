@@ -1,12 +1,11 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-from scipy import sparse  # <--- ADD THIS
-
+from scipy import sparse
 from sklearn.metrics.pairwise import cosine_similarity
-# --- 1. ADD THIS AT THE TOP ---
+
+# --- 1. CONFIGURATION ---
 CLUSTER_NAMES = {
     0: "Indie",
     1: "Alternative",
@@ -16,23 +15,22 @@ CLUSTER_NAMES = {
     5: "Pop-Punk",
     6: "Metal",
     7: "Dance"
-    # Add all your cluster numbers here!
 }
-app = Flask(__name__)
-CORS(app)  # This allows your local HTML file to talk to this Python server
 
-# --- 1. LOAD DATA ONCE ---
-# Ensure these files are in the same folder as this script!
+app = Flask(__name__)
+CORS(app)
+
+# --- 2. LOAD DATA ---
 try:
+    # Use reset_index to ensure indices match the tfidf_matrix
     df = pd.read_csv("artists_with_clusters.csv").reset_index(drop=True)
     tfidf_matrix = sparse.load_npz("tfidf_matrix.npz").tocsr()
     print("🚀 Data and Matrix loaded successfully!")
 except Exception as e:
     print(f"❌ Error loading data: {e}")
 
-# --- 2. THE OPTIMIZED ENGINE ---
+# --- 3. RECOMMENDATION ENGINE ---
 def recommend_artists(input_artists):
-    # Find matching rows
     input_rows = df[df['artist_lastfm'].isin(input_artists)]
     if input_rows.empty:
         return []
@@ -40,16 +38,15 @@ def recommend_artists(input_artists):
     input_indices = input_rows.index.tolist()
     input_cluster_ids = set(input_rows['cluster'].unique())
 
-    # Calculate average vector and similarity
     input_vectors = tfidf_matrix[input_indices]
     target_vector = np.asarray(input_vectors.mean(axis=0)).reshape(1, -1)
     similarity_scores = cosine_similarity(target_vector, tfidf_matrix).flatten()
 
-    # Fast Vectorized Boosting
+    # Boost results in the same clusters
     mask = df['cluster'].isin(input_cluster_ids).values
     similarity_scores[mask] *= 1.2
     
-    # Exclude original inputs
+    # Exclude inputs from results
     similarity_scores[input_indices] = -1
 
     # Get Top 3
@@ -58,22 +55,19 @@ def recommend_artists(input_artists):
     recommendations = []
     for idx in top3_indices:
         row = df.iloc[idx]
-        cluster_id = int(row['cluster'])
         
-         # Use the actual column name from your CSV here
-    cluster_num = int(row['cluster_id']) 
-    
-    # Look up the name (e.g., 0 becomes "Indie")
-    display_name = CLUSTER_NAMES.get(cluster_num, f"Cluster {cluster_num}")
-    
-    recommendations.append({
-        'name': row['artist_lastfm'],
-        'display_name': display_name, # This is the "Indie/Metal/Pop" string
-        'svd_coordinates': [float(row['svd_1']), float(row['svd_2'])]
-    })
+        # Get the ID and find the corresponding name from CLUSTER_NAMES
+        cluster_num = int(row['cluster_id']) 
+        display_name = CLUSTER_NAMES.get(cluster_num, f"Cluster {cluster_num}")
+
+        recommendations.append({
+            'name': row['artist_lastfm'],
+            'display_name': display_name,
+            'svd_coordinates': [float(row['svd_1']), float(row['svd_2'])]
+        })
     return recommendations
 
-# --- 3. THE ENDPOINT ---
+# --- 4. ROUTES ---
 @app.route('/recommend', methods=['POST'])
 def recommend():
     data = request.json
@@ -86,5 +80,5 @@ def recommend():
     return jsonify(results)
 
 if __name__ == '__main__':
-    # Running on port 5000 by default
-    app.run(debug=True, port=5000)
+    # host 0.0.0.0 is required for Render
+    app.run(host='0.0.0.0', port=10000)
