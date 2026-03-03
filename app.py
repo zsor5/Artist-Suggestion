@@ -60,14 +60,17 @@ def recommend_artists(input_artists):
         row = df.iloc[idx]
         cluster_id = int(row['cluster'])
         
-        # Look up the name, or use "Unknown Vibe" if the ID isn't in our dictionary
-        vibe_name = CLUSTER_NAMES.get(cluster_id, f"Vibe #{cluster_id}")
-
-        recommendations.append({
-            'name': row['artist_lastfm'],
-            'vibe': vibe_name, # Changed from cluster_id
-            'svd_coordinates': [float(row['svd_1']), float(row['svd_2'])]
-        })
+         # Use the actual column name from your CSV here
+    cluster_num = int(row['cluster_id']) 
+    
+    # Look up the name (e.g., 0 becomes "Indie")
+    display_name = CLUSTER_NAMES.get(cluster_num, f"Cluster {cluster_num}")
+    
+    recommendations.append({
+        'name': row['artist_lastfm'],
+        'display_name': display_name, # This is the "Indie/Metal/Pop" string
+        'svd_coordinates': [float(row['svd_1']), float(row['svd_2'])]
+    })
     return recommendations
 
 # --- 3. THE ENDPOINT ---
