@@ -1,0 +1,76 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import pandas as pd
+import numpy as np
+import joblib
+from sklearn.metrics.pairwise import cosine_similarity
+# --- 1. ADD THIS AT THE TOP ---
+CLUSTER_NAMES = {
+    0: "Atmospheric Hip-Hop",
+    1: "Alternative Pop",
+    2: "Experimental Electronic",
+    3: "Underground Rap",
+    # Add all your cluster numbers here!
+}
+app = Flask(__name__)
+CORS(app)  # This allows your local HTML file to talk to this Python server
+
+# --- 1. LOAD DATA ONCE ---
+# Ensure these files are in the same folder as this script!
+try:
+    df = pd.read_csv("artists_with_clusters.csv").reset_index(drop=True)
+    tfidf_matrix = joblib.load("tfidf_matrix.pkl")
+    print("🚀 Data and Matrix loaded successfully!")
+except Exception as e:
+    print(f"❌ Error loading data: {e}")
+
+# --- 2. THE OPTIMIZED ENGINE ---
+def recommend_artists(input_artists):
+    # Find matching rows
+    input_rows = df[df['artist_lastfm'].isin(input_artists)]
+    if input_rows.empty:
+        return []
+
+    input_indices = input_rows.index.tolist()
+    input_cluster_ids = set(input_rows['cluster'].unique())
+
+    # Calculate average vector and similarity
+    input_vectors = tfidf_matrix[input_indices]
+    target_vector = np.asarray(input_vectors.mean(axis=0)).reshape(1, -1)
+    similarity_scores = cosine_similarity(target_vector, tfidf_matrix).flatten()
+
+    # Fast Vectorized Boosting
+    mask = df['cluster'].isin(input_cluster_ids).values
+    similarity_scores[mask] *= 1.2
+    
+    # Exclude original inputs
+    similarity_scores[input_indices] = -1
+
+    # Get Top 3
+    top3_indices = np.argsort(similarity_scores)[-3:][::-1]
+
+    recommendations = []
+    for idx in top3_indices:
+        row = df.iloc[idx]
+        recommendations.append({
+            'name': row['artist_lastfm'],
+            'cluster_id': int(row['cluster']),
+            'svd_coordinates': [float(row['svd_1']), float(row['svd_2'])]
+        })
+    return recommendations
+
+# --- 3. THE ENDPOINT ---
+@app.route('/recommend', methods=['POST'])
+def recommend():
+    data = request.json
+    selected_artists = data.get('artists', [])
+    
+    if not selected_artists:
+        return jsonify({"error": "No artists provided"}), 400
+        
+    results = recommend_artists(selected_artists)
+    return jsonify(results)
+
+if __name__ == '__main__':
+    # Running on port 5000 by default
+    app.run(debug=True, port=5000)
