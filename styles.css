@@ -163,3 +163,53 @@ body{
 .suggestions-list li:hover {
     background-color: #f0f0f0;
 }
+
+
+
+
+.Results-Section {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+    padding-bottom: 50px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.Artist-Card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    width: 220px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 2px solid black;
+}
+
+.Artist-Card:hover {
+    transform: translateY(-10px);
+}
+
+.Artist-Card h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.Artist-Card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.Cluster-Tag {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    margin-top: 10px;
+}
