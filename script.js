@@ -112,12 +112,12 @@ function displayResults(data) {
 
         // Build the inner HTML
         // We use .toFixed(2) to make the SVD coordinates look clean
-        card.innerHTML = `
-            <h2>${artist.name}</h2>
-            <p>Style Match: High</p>
-            <p>SVD: ${artist.svd_coordinates[0].toFixed(2)}, ${artist.svd_coordinates[1].toFixed(2)}</p>
-            <span class="Cluster-Tag">Cluster ${artist.cluster_id}</span>
-        `;
+       card.innerHTML = `
+        <h2>${artist.name}</h2>
+        <p>Style Match: High</p>
+        <p>SVD: ${artist.svd_coordinates[0].toFixed(2)}, ${artist.svd_coordinates[1].toFixed(2)}</p>
+        <span class="Cluster-Tag">${artist.display_name}</span> 
+    `;
 
         container.appendChild(card);
     });
