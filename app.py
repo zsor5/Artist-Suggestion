@@ -7,14 +7,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # --- 1. CONFIGURATION ---
 CLUSTER_NAMES = {
-    0: "Indie",
-    1: "Alternative",
-    2: "Electronic",
-    3: "Hip-Hop",
-    4: "Pop", 
-    5: "Pop-Punk",
-    6: "Metal",
-    7: "Dance"
+    0: "Metal",
+    1: "Punk",
+    2: "Pop",
+    3: "Indie",
+    4: "Dance", 
+    5: "Jazz",
+    6: "Hip-Hop",
+    7: "Rock"
 }
 
 app = Flask(__name__)
