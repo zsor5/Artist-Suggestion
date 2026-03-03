@@ -78,7 +78,7 @@ recommendBtn.addEventListener('click', async (e) => {
 
     try {
         // 2. Send the data to your Python Flask Server
-        const response = await fetch('https://artist-suggestion.onrender.com',{
+        const response = await fetch('https://artist-suggestion.onrender.com/recommend',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
