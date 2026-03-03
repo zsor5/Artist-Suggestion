@@ -57,7 +57,7 @@ def recommend_artists(input_artists):
         row = df.iloc[idx]
         
         # Get the ID and find the corresponding name from CLUSTER_NAMES
-        cluster_num = int(row['cluster_id']) 
+        cluster_num = int(row['cluster']) 
         display_name = CLUSTER_NAMES.get(cluster_num, f"Cluster {cluster_num}")
 
         recommendations.append({
