@@ -25,9 +25,9 @@ try:
     # Use reset_index to ensure indices match the tfidf_matrix
     df = pd.read_csv("artists_with_clusters.csv").reset_index(drop=True)
     tfidf_matrix = sparse.load_npz("tfidf_matrix.npz").tocsr()
-    print("🚀 Data and Matrix loaded successfully!")
+    print("Data and Matrix loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading data: {e}")
+    print(f"Error loading data: {e}")
 
 # --- 3. RECOMMENDATION ENGINE ---
 def recommend_artists(input_artists):
